@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/data">
+        <file>img/template/chess.jpg</file>
+        <file>img/template/chess2.jpg</file>
+        <file>json/template.json</file>
+        <file>img/template/pieces.jpg</file>
+    </qresource>
+</RCC>

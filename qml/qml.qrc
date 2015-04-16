@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>Card.qml</file>
+        <file>FileIO.qml</file>
+        <file>main.qml</file>
+        <file>MainForm.ui.qml</file>
+        <file>MemoGrid.qml</file>
+        <file>MemoryModel.qml</file>
+        <file>Params.qml</file>
+        <file>TopBar.qml</file>
+        <file>json/jsonData.txt</file>
+        <file>json/JSONListModel.qml</file>
+        <file>json/jsonpath.js</file>
+        <file>WonScreen.qml</file>
+        <file>PuzzleList.qml</file>
+        <file>LocalLibrary.qml</file>
+        <file>GoogleLibrary.qml</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>media/LibraryView.qml</file>
+    </qresource>
+</RCC>

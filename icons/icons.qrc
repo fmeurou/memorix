@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>edit.svg</file>
+        <file>filenew.svg</file>
+        <file>icon.retour.png</file>
+        <file>ip.jpg</file>
+        <file>package.svg</file>
+        <file>up.svg</file>
+    </qresource>
+</RCC>

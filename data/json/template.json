@@ -1,0 +1,12 @@
+{
+    "title": "Library template",
+    "image": "qrc:/data/img/template/pieces.jpg",
+    "elements":[{
+            "name": "First image",
+            "src": "qrc:/data/img/template/chess.jpg"
+        },{
+            "name": "Second image",
+            "src": "qrc:/data/img/template/chess2.jpg"
+        }
+    ]
+}
