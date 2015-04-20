@@ -64,7 +64,7 @@ Item {
             }
         }
 
-        doc.open("GET", "https://www.googleapis.com/customsearch/v1?q=" + pictureSearch.text + "&fileType=jpg&key=AIzaSyBYl-y8n1yAp6halxRPC5mu5e7C1HCx_aU");
+        doc.open("GET", "https://www.googleapis.com/customsearch/v1?q=" + pictureSearch.text + "&fileType=jpg&key=AIzaSyBYl-y8n1yAp6halxRPC5mu5e7C1HCx_aU&cx=007188189272169326121:0jzz7yqxi8c");
         doc.send();
     }
 }

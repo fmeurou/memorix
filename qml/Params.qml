@@ -15,14 +15,20 @@ Item {
             width: parent.width
             iconName: "qrc:/icons/filenew.svg"
             text: qsTr("create local album")
-            onClicked: menuView.state = 'local'
+            onClicked: {
+                console.log("display local files")
+                menuView.state = 'local'
+            }
         }
         Button  {
             height: 80
             width: parent.width
             iconName: "qrc:/icons/filenew.svg"
             text: qsTr("create google search album")
-            onClicked: menuView.state = 'google'
+            onClicked: {
+                console.log("display google search")
+                menuView.state = 'google'
+            }
         }
     }
     LocalLibrary    {

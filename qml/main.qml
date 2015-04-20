@@ -12,10 +12,7 @@ Window {
         id: mainForm
         anchors.fill: parent
         property var modelList: [
-            ":/data/json/barbapapa.json",
-            ":/data/json/starwars.json",
-            ":/data/json/cars.json",
-            ":/data/json/meurou.json"
+            ":/data/json/template.json",
         ]
         ListModel   {
             id: randomList
@@ -76,6 +73,7 @@ Window {
 
 
     Component.onCompleted:  {
+        initialize()
         for(var i = 0; i < mainForm.modelList.length; i++)  {
             console.log("FileIO {id: myFile;source: '" + mainForm.modelList[i] + "';onError: console.log(msg);}", mainForm, "")
             var objectString = "import QtQuick 2.4; import FileIO 1.0; FileIO {id: myFile;source: '" + mainForm.modelList[i] + "';onError: console.log(msg);}"
@@ -84,6 +82,11 @@ Window {
             console.log(jsonModel.title)
             puzzleList.append(jsonModel)
             showMenu()
+        }
+        puzzles = getSetting("puzzles", "")
+        puzzles = JSON.parse(puzzles)
+        for(var i = 0; i < puzzles.puzzleList.length; i++)  {
+            puzzleList.append(puzzles[puzzles.puzzleList[i]])
         }
     }
     function loadModel(v_modelName) {
@@ -125,6 +128,15 @@ Window {
 
     }
 
+    function slugify(text)  {
+      return text.toString().toLowerCase()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, '');            // Trim - from end of text
+    }
+
     function shuffle(array) {
       var currentIndex = array.length, temporaryValue, randomIndex ;
 
@@ -142,5 +154,58 @@ Window {
       }
 
       return array;
+    }
+
+    //storage.js
+    // First, let's create a short helper function to get the database connection
+    function getDatabase() {
+         return LocalStorage.openDatabaseSync("memorix", "1.0", "StorageDatabase", 100000);
+    }
+
+    // At the start of the application, we can initialize the tables we need if they haven't been created yet
+    function initialize() {
+        var db = getDatabase();
+        db.transaction(
+            function(tx) {
+                // Create the settings table if it doesn't already exist
+                // If the table exists, this is skipped
+                tx.executeSql('CREATE TABLE IF NOT EXISTS settings(setting TEXT UNIQUE, value TEXT)');
+          });
+    }
+
+    // This function is used to write a setting into the database
+    function setSetting(setting, value) {
+       // setting: string representing the setting name (eg: “username”)
+       // value: string representing the value of the setting (eg: “myUsername”)
+       var db = getDatabase();
+       var res = "";
+       db.transaction(function(tx) {
+            var rs = tx.executeSql('INSERT OR REPLACE INTO settings VALUES (?,?);', [setting,value]);
+                  //console.log(rs.rowsAffected)
+                  if (rs.rowsAffected > 0) {
+                    res = "OK";
+                  } else {
+                    res = "Error";
+                  }
+            }
+      );
+      // The function returns “OK” if it was successful, or “Error” if it wasn't
+      return res;
+    }
+    // This function is used to retrieve a setting from the database
+    function getSetting(setting, defaultValue) {
+       var db = getDatabase();
+       var res="";
+       db.transaction(function(tx) {
+         var rs = tx.executeSql('SELECT value FROM settings WHERE setting=?;', [setting]);
+         if (rs.rows.length > 0) {
+              res = rs.rows.item(0).value;
+         } else {
+             res = defaultValue;
+         }
+      })
+      // The function returns “Unknown” if the setting was not found in the database
+      // For more advanced projects, this should probably be handled through error codes
+      return res
     }
 }
