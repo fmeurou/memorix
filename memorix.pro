@@ -3,7 +3,6 @@ TEMPLATE = app
 QT += qml quick
 QTPLUGIN += qsvg
 INCLUDEPATH += .
-CONFIG += console
 
 SOURCES += main.cpp \
     fileio.cpp \

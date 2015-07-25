@@ -15,8 +15,6 @@
         <file>PuzzleList.qml</file>
         <file>LocalLibrary.qml</file>
         <file>GoogleLibrary.qml</file>
-    </qresource>
-    <qresource prefix="/">
         <file>media/LibraryView.qml</file>
     </qresource>
 </RCC>

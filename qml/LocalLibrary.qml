@@ -1,8 +1,10 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.2
 
-Item {
+Item {    
+    id: localLibrary
     property var selectedItems: []
+    property var gridSize: [2, 8, 18, 32, 50, 72, 98, 128]
     anchors {
         fill: parent
     }
@@ -15,21 +17,10 @@ Item {
         height: parent.height - 4
 
         color: "#ffffff"
-        TextField   {
-            id: libraryName
-            height: 80
-            width:parent.width
-            placeholderText: qsTr("library name")
-            anchors {
-                bottom: addButton.top
-                bottomMargin: 1
-                horizontalCenter: parent.horizontalCenter
-            }
-        }
         Rectangle   {
             id: navBar
             width: parent.width
-            height: 80
+            height: 50
             anchors {
                 top: parent.top
                 left: parent.left
@@ -131,11 +122,14 @@ Item {
                     onClicked: {
                         if(!isDir)   {
                             imageItem.checked = !imageItem.checked
-                            if(selectedItems.indexOf(path) < 0) {
-                                selectedItems.push(path)
+                            if(localLibrary.selectedItems.indexOf(path) < 0) {
+                                localLibrary.selectedItems.push(path)
                             }   else    {
-                                selectedItems.pop(selectedItems.indexOf(path))
+                                localLibrary.selectedItems.pop(selectedItems.indexOf(path))
                             }
+                            console.log(localLibrary.selectedItems, localLibrary.selectedItems.length,getNextCount(localLibrary.selectedItems.length))
+                            addButton.text = qsTr("add library") + " " + localLibrary.selectedItems.length + " " + qsTr("out of") + " " + getNextCount(localLibrary.selectedItems.length)
+                            addButton.enabled = localLibrary.selectedItems.length == getNextCount(localLibrary.selectedItems.length)
                         }   else    {
                             pictures.setPath(path);
                         }
@@ -144,21 +138,63 @@ Item {
             }
             model: pictures
         }
-        Button  {
-            id: addButton
-            text: qsTr("add library")
-            width: parent.width
-            enabled: (Math.floor(Math.pow((selectedItems.lengh * 2), 2) / 2) - Math.pow((selectedItems.lengh * 2), 2) / 2) == 0
-            height: 80
+        TextField   {
+            id: puzzleName
+            width: parent.width * 0.6
+            height: 50
             anchors {
                 left: parent.left
                 bottom: parent.bottom
             }
+            placeholderText: qsTr("enter puzzle name")
+        }
+
+        Button  {
+            id: addButton
+            text: qsTr("select pictures to build your memory game")
+            width: parent.width * 0.4
+            enabled: false
+            height: 50
+            anchors {
+                right: parent.right
+                bottom: parent.bottom
+            }
             onClicked: {
-                for(var i=0; i < selectedItems.length; i++)  {
-                    console.log(selectedItems[i])
+                var newPuzzle = {
+                    id: guid(),
+                    title: puzzleName.text,
+                    elements: []
                 }
+
+                for(var i=0; i < selectedItems.length; i++)  {
+                    if(i == 0)  {
+                        newPuzzle.image = selectedItems[i]
+                    }
+                    newPuzzle.elements.push({"name": selectedItems[i],
+                                             "src": selectedItems[i]})
+                }
+                console.log(newPuzzle)
+                storePuzzle(newPuzzle)
             }
         }
+    }
+    function getNextCount(currentCount) {
+        var nextCount = 0;
+        for(var i = 0; i < gridSize.length; i++)    {
+            if(currentCount <= gridSize[i])  {
+                return gridSize[i]
+            }
+        }
+        return 999;
+    }
+
+    function guid() {
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+      }
+      return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
     }
 }

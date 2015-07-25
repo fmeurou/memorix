@@ -1,3 +1,4 @@
+import QtQuick.LocalStorage 2.0
 import QtQuick 2.4
 import QtQuick.Controls 1.2
 import QtQuick.Dialogs 1.1
@@ -31,8 +32,8 @@ Window {
             }
             onParamsClicked:{
                 memoList.visible = false
-                centerView.source = "Params.qml"
-                upVisible = false
+                centerView.source = "LocalLibrary.qml"
+                upVisible = true
             }
         }
 
@@ -70,10 +71,34 @@ Window {
         }
     }
 
+    MessageDialog   {
+        id: messageDialog
+        property string idToDelete: ""
+        title: qsTr("Puzzle deletion warning")
+        text: qsTr("You are about to remove a puzzle. There's no turning back!")
+        standardButtons: StandardButton.Cancel | StandardButton.Ok
+        onAccepted: {
+            removePuzzle(idToDelete)
+            idToDelete = ""
+            visible = false
+        }
+        onRejected: {
+            console.log("that was close!")
+            visible = false
+        }
+
+        Component.onCompleted: visible = false
+    }
+
 
 
     Component.onCompleted:  {
         initialize()
+        showMenu()
+    }
+
+    function loadPuzzles()  {
+        puzzleList.clear()
         for(var i = 0; i < mainForm.modelList.length; i++)  {
             console.log("FileIO {id: myFile;source: '" + mainForm.modelList[i] + "';onError: console.log(msg);}", mainForm, "")
             var objectString = "import QtQuick 2.4; import FileIO 1.0; FileIO {id: myFile;source: '" + mainForm.modelList[i] + "';onError: console.log(msg);}"
@@ -81,20 +106,22 @@ Window {
             var jsonModel = JSON.parse(modelReader.read())
             console.log(jsonModel.title)
             puzzleList.append(jsonModel)
-            showMenu()
         }
-        puzzles = getSetting("puzzles", "")
-        puzzles = JSON.parse(puzzles)
-        for(var i = 0; i < puzzles.puzzleList.length; i++)  {
-            puzzleList.append(puzzles[puzzles.puzzleList[i]])
+        var localPuzzles = JSON.parse(getSetting("puzzles", "{\"puzzleList\": []}"))
+        console.log("loadPuzzles", localPuzzles)
+        for(var i = 0; i < localPuzzles.puzzleList.length; i++)  {
+            puzzleList.append(localPuzzles.puzzleList[i])
         }
+
     }
+
     function loadModel(v_modelName) {
         console.log("loading model", v_modelName)
 
     }
 
     function showMenu() {
+        loadPuzzles()
         topBar.upVisible = false
         memoList.visible = false
         centerView.source = "PuzzleList.qml"
@@ -125,8 +152,30 @@ Window {
         memoList.resizeGrid()
         memoList.visible = true
         topBar.upVisible = true
-
     }
+
+    function storePuzzle(puzzleJSON)  {
+        var existingPuzzles = JSON.parse(getSetting("puzzles", "{\"puzzleList\": []}"))
+        console.log("storePuzzle", JSON.stringify(existingPuzzles), JSON.stringify(puzzleJSON))
+        existingPuzzles.puzzleList.push(puzzleJSON)
+        console.log()
+        setSetting("puzzles", JSON.stringify(existingPuzzles))
+        showMenu()
+    }
+
+    function removePuzzle(puzzleId)   {
+        var existingPuzzles = JSON.parse(getSetting("puzzles", "{\"puzzleList\": []}"))
+        console.log("storePuzzle", JSON.stringify(existingPuzzles), puzzleId)
+        for(var i = 0; i < existingPuzzles.puzzleList.length; i++)  {
+            if(existingPuzzles.puzzleList[i].id == puzzleId)    {
+                existingPuzzles.puzzleList.splice(i, 1);
+            }
+        }
+        console.log("removed element", puzzleId)
+        setSetting("puzzles", JSON.stringify(existingPuzzles))
+        showMenu()
+    }
+
 
     function slugify(text)  {
       return text.toString().toLowerCase()
@@ -207,5 +256,10 @@ Window {
       // The function returns “Unknown” if the setting was not found in the database
       // For more advanced projects, this should probably be handled through error codes
       return res
+    }
+
+    function showConfirmationDialog(v_idToDelete)  {
+        messageDialog.idToDelete = v_idToDelete
+        messageDialog.visible = true
     }
 }

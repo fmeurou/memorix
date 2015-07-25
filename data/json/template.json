@@ -1,4 +1,5 @@
 {
+    "id": "0",
     "title": "Library template",
     "image": "qrc:/data/img/template/pieces.jpg",
     "elements":[{
