@@ -25,3 +25,6 @@ android-no-sdk {
 }
 
 export(INSTALLS)
+
+DISTFILES += \
+    $$PWD/ios/Info.plist

@@ -28,15 +28,6 @@ Flipable  {
             fillMode: Qt.KeepAspectRatio
             source: src
         }
-        DropShadow {
-            anchors.fill: cardBack
-            horizontalOffset: 3
-            verticalOffset: 3
-            radius: 3.0
-            samples: 16
-            color: "#80000000"
-            source: cardImg
-        }
         Rectangle   {
             id: cardTextRect
             width: cardImg.paintedWidth
