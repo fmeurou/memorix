@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.2
+import QtGraphicalEffects 1.0
 
 GridView    {
     id: puzzleListView
@@ -9,12 +10,15 @@ GridView    {
     cellHeight: height / 2
     clip: true
     delegate:   Rectangle   {
-        width: puzzleListView.cellWidth
-        height: puzzleListView.cellHeight
+        id: puzzleRect
+        width: puzzleListView.cellWidth - 5
+        height: puzzleListView.cellHeight - 5
+        color: "#ffffff"
         Image   {
+            id: puzzleImg
             source: image
-            width: puzzleListView.cellWidth - 10
-            height: puzzleListView.cellHeight - 10
+            width: parent.width
+            height: parent.height
             anchors {
                 centerIn: parent
             }
@@ -26,6 +30,37 @@ GridView    {
                 onClicked: initPuzzle(elements)
             }
         }
+        DropShadow {
+            anchors.fill: puzzleRect
+            horizontalOffset: 3
+            verticalOffset: 3
+            radius: 3.0
+            samples: 16
+            color: "#80000000"
+            source: puzzleImg
+        }
+        Rectangle   {
+            id: puzzleTextRect
+            width: puzzleImg.paintedWidth
+            height: nameText.contentHeight
+            color: "#656565"
+            anchors {
+                bottom: parent.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
+
+            opacity: 0.8
+            Text    {
+                id: nameText
+                width: parent.width
+                horizontalAlignment: Text.AlignHCenter
+                color: '#ffffff'
+                text: title
+                wrapMode: Text.WrapAnywhere
+            }
+        }
+
+
         Image    {
             id: deletePuzzleBox
             width: parent.height * 0.1
@@ -43,6 +78,7 @@ GridView    {
                 onClicked: showConfirmationDialog(id)
             }
         }
+
     }
     model: puzzleModel
 }

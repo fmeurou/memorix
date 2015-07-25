@@ -128,8 +128,9 @@ Item {
                                 localLibrary.selectedItems.pop(selectedItems.indexOf(path))
                             }
                             console.log(localLibrary.selectedItems, localLibrary.selectedItems.length,getNextCount(localLibrary.selectedItems.length))
-                            addButton.text = qsTr("add library") + " " + localLibrary.selectedItems.length + " " + qsTr("out of") + " " + getNextCount(localLibrary.selectedItems.length)
                             addButton.enabled = localLibrary.selectedItems.length == getNextCount(localLibrary.selectedItems.length)
+                            addButton.text = addButton.enabled ? qsTr("add library") : localLibrary.selectedItems.length + " / " + getNextCount(localLibrary.selectedItems.length)
+
                         }   else    {
                             pictures.setPath(path);
                         }
@@ -151,7 +152,7 @@ Item {
 
         Button  {
             id: addButton
-            text: qsTr("select pictures to build your memory game")
+            text: qsTr("select pictures")
             width: parent.width * 0.4
             enabled: false
             height: 50
@@ -167,10 +168,13 @@ Item {
                 }
 
                 for(var i=0; i < selectedItems.length; i++)  {
+                    var itemName = selectedItems[i].split('/');
+                    itemName = itemName[itemName.length - 1].split('.')
+                    itemName = itemName[0]
                     if(i == 0)  {
                         newPuzzle.image = selectedItems[i]
                     }
-                    newPuzzle.elements.push({"name": selectedItems[i],
+                    newPuzzle.elements.push({"name": itemName,
                                              "src": selectedItems[i]})
                 }
                 console.log(newPuzzle)

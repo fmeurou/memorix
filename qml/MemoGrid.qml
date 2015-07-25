@@ -15,8 +15,8 @@ GridView    {
     visible: false
     delegate: Card  {
         id: flipCard
-        width: barbaList.cellWidth
-        height: barbaList.cellHeight
+        width: barbaList.cellWidth - 5
+        height: barbaList.cellHeight - 5
         onCardClicked: {
             if(!flipCard.found && !(barbaList.firstFlipped && barbaList.lastFlipped))  {
                 flipCard.flipped = !flipCard.flipped
